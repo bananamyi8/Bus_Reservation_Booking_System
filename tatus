@@ -1,0 +1,8 @@
+*   [33md031003[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m docs: add system architecture and CI/CD documentation
+[31m|[m[32m\[m  
+[31m|[m [32m|[m * [33m11cefb5[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m docs: Add README for Bus Ticket Reservation System
+[31m|[m [32m|[m * [33mcedec2c[m docs: resolve README merge conflict
+[31m|[m [32m|[m[31m/[m[32m|[m 
+[31m|[m[31m/[m[32m|[m[32m/[m  
+[31m|[m * [33ma12c27c[m Initial commit
+* [33mecce687[m feat(backend): initialize backend server and project structure

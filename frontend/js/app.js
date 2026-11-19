@@ -3,7 +3,7 @@
   const $ = s => document.querySelector(s);
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const today = () => { const d = new Date(); return new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 10); };
-  const S = { reg: false, token: null, user: null, view: 'dash', step: 1, b: {}, q: null, results: null, sel: null, cancelling: false, fq: '', et: null, rf: null, rt: null };
+  const S = { page: 'landing', reg: false, token: null, user: null, view: 'dash', step: 1, b: {}, q: null, results: null, sel: null, cancelling: false, fq: '', et: null, rf: null, rt: null };
   try { S.token = sessionStorage.getItem('tok'); S.user = JSON.parse(sessionStorage.getItem('usr') || 'null'); } catch (e) { /* storage unavailable */ }
 
   async function api(path, opt) {
@@ -28,6 +28,7 @@
 
   function signOut() {
     S.token = null; S.user = null;
+    S.page = 'landing'; S.reg = false;
     try { sessionStorage.clear(); } catch (e) { /* ignore */ }
     render();
   }
@@ -40,8 +41,88 @@
   const peso = L.formatPeso;
   const field = (id, label, extra, hint) => `<div class="field"><label for="${id}">${label}${hint ? ` <span class="hint">${hint}</span>` : ''}</label><input id="${id}" name="${id}" ${extra || ''}></div>`;
 
+    function landingH() {
+    const layer = Array.from({ length: 9 }, (_, i) =>
+      `<use href="#lpBlob" style="--i:${i}" transform="translate(300 300) scale(${(1 - i * 0.105).toFixed(3)}) translate(-300 -300)"/>`).join('');
+    const items = ['Choose your trip', 'Pick your seat', 'Show a valid ID', 'Pay at the station', 'Travel with a reserved seat'];
+    const row = items.map(t => `<span>${t}</span>`).join('');
+    const step = (n, c, d, title, text) => `<li class="rv" style="--d:${d}s"><div class="lp-step" style="--c:${c}"><b>${n}</b><h3>${title}</h3><p>${text}</p></div></li>`;
+    return `<div class="lp">
+    <header class="lp-nav">
+      <a class="lp-brand" href="#top"><i></i>Bicol Isarog</a>
+      <nav class="lp-links" aria-label="Main"><a href="#how">How it works</a><a href="#notes">Good to know</a></nav>
+      <div class="lp-nav-btns"><button class="lp-btn lp-ghost" data-act="showreg">Create account</button><button class="lp-btn lp-solid" data-act="showlogin">Sign in</button></div>
+    </header>
+
+    <section class="lp-hero" id="top">
+      <svg class="lp-contour" viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="lpGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8ad8ff"/><stop offset=".5" stop-color="#3a54b4"/><stop offset="1" stop-color="#84df75"/></linearGradient>
+          <path id="lpBlob" d="M300 60C420 40 540 140 530 280C520 420 420 540 290 530C160 520 60 420 70 290C80 160 180 80 300 60Z"/>
+        </defs>
+        <g class="a">${layer}</g>
+        <g transform="translate(250 270) scale(.62)"><g class="b">${layer}</g></g>
+      </svg>
+      <div class="lp-copy">
+        <h1 class="lp-up" style="--d:.05s">Reserve your seat<span>.</span></h1>
+        <p class="lp-lead lp-up" style="--d:.2s">Pick your trip and your seat online with Bicol Isarog Transport System. Pay the fare at the booking station when you arrive.</p>
+        <div class="lp-cta lp-up" style="--d:.35s"><button class="lp-btn lp-lime" data-act="showreg">Create account</button><a class="lp-btn lp-ghost" href="#how">See how it works</a></div>
+      </div>
+      <figure class="lp-photo lp-up" style="--d:.3s">
+        <div class="lp-float"><img src="img/bus.png" width="638" height="378" alt="A Bicol Isarog bus parked at the terminal on a sunny day"></div>
+        <figcaption>Reserve online. Pay at the station.</figcaption>
+      </figure>
+      <a class="lp-scroll" href="#how" aria-label="Scroll to how it works"><span></span></a>
+    </section>
+
+    <div class="lp-ticker" aria-hidden="true"><div>${row}${row}</div></div>
+
+    <section class="lp-sec" id="how">
+      <h2 class="rv">How it works</h2>
+      <p class="lp-sub rv" style="--d:.08s">Four short steps from sign-up to a reserved seat.</p>
+      <ol class="lp-steps">
+        ${step(1, 'var(--lime)', 0, 'Create an account', 'Use your name and a contact number we can reach.')}
+        ${step(2, 'var(--green)', 0.1, 'Choose a trip', 'Enter where you are going and the travel date, then pick a departure.')}
+        ${step(3, 'var(--sky)', 0.2, 'Pick your seat', 'Taken seats are crossed out, so nobody else can be given yours.')}
+        ${step(4, 'var(--ice)', 0.3, 'Pay at the station', 'Show a valid ID. Your booking is marked paid once staff record your payment.')}
+      </ol>
+    </section>
+
+    <section class="lp-sec" id="notes">
+      <div class="lp-notes">
+        <div class="rv"><h2>Good to know</h2><p>Plan ahead for long trips and busy holiday dates.</p></div>
+        <ul class="lp-list rv" style="--d:.12s">
+          <li>Advance reservations are best for long-distance travel.</li>
+          <li>View or cancel your own bookings any time under My bookings.</li>
+          <li>Fares and schedules are set by Bicol Isarog Transport System and shown once you sign in.</li>
+          <li>Booking station staff and administrators sign in from the same page.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="lp-sec">
+      <div class="lp-band rv">
+        <div><h2>Ready to travel?</h2><p>Create your account and reserve a seat in a few minutes.</p></div>
+        <button class="lp-btn lp-lime" data-act="showreg">Create account</button>
+      </div>
+    </section>
+
+    <footer class="lp-foot"><p>Bicol Isarog Transport System, Inc. Booking and reservation system.</p></footer>
+    </div>`;
+  }
+
+  function initReveal() {
+    const els = document.querySelectorAll('.rv');
+    if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('in')); return; }
+    const io = new IntersectionObserver(list => list.forEach(x => {
+      if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); }
+    }), { threshold: 0.15 });
+    els.forEach(e => io.observe(e));
+  }
+
   async function render() {
     const app = $('#app');
+    if (!S.user && S.page === 'landing') { app.innerHTML = landingH(); initReveal(); window.scrollTo(0, 0); return; }
     if (!S.user && S.reg) {
     app.innerHTML = `<div class="login"><h1>Create a customer account</h1><form data-form="register" novalidate>${field('name', 'Full name')}${field('contact', 'Contact number', 'inputmode="tel"', '7 to 15 digits')}${field('username', 'Username', 'autocomplete="username"')}${field('password', 'Password', 'type="password" autocomplete="new-password"', '10 or more characters')}${msgH()}<div class="actions"><button class="go" type="submit">Create account</button><button class="alt" type="button" data-act="showlogin">Back to sign in</button></div></form></div>`;
     return;
@@ -49,7 +130,7 @@
     if (!S.user) {
       app.innerHTML = `<div class="login"><h1>Bicol Isarog booking station</h1><p class="hint">Sign in with the account your administrator gave you.</p>
       <form data-form="login" novalidate>${field('username', 'Username', 'autocomplete="username"')}${field('password', 'Password', 'type="password" autocomplete="current-password"')}${msgH()}
-      <button class="go" type="submit">Sign in</button></form><p style="margin-top:1rem"><button class="alt" data-act="showreg">New customer? Create an account</button></p></div>`;
+      <button class="go" type="submit">Sign in</button></form><p style="margin-top:1rem"><button class="alt" data-act="showreg">New customer? Create an account</button> <button class="alt" data-act="showlanding">Back to home</button></p></div>`;
       return;
     }
     const nav = S.user.role === 'passenger' ? [['book', 'Book a trip'], ['find', 'My bookings']] : [['book', 'New booking'], ['find', 'Find booking']];
@@ -279,8 +360,9 @@
     nocancel() { S.cancelling = false; return render(); },
     edittrip(id) { S.et = id; return render(); },
     canceledit() { S.et = null; return render(); },
-    showreg() { S.reg = true; return render(); },
-    showlogin() { S.reg = false; return render(); },
+    showreg() { S.reg = true; S.page = 'login'; return render(); },
+    showlogin() { S.reg = false; S.page = 'login'; return render(); },
+    showlanding() { S.reg = false; S.page = 'landing'; return render(); },
     async toggle(id, el) { await api('/api/v1/trips/' + id, { method: 'PATCH', body: { active: el.dataset.on !== 'true' } }); return render(); }
   };
 
