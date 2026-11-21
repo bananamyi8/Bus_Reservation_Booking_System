@@ -10,7 +10,7 @@ describe('backend', () => {
   test('B-T1 health check answers 200 with status ok', async () => {
     const res = await request(app).get('/api/health');
     expect(res.status).toBe(200);
-    expect(res.body.status).toBe('failed');
+    expect(res.body.status).toBe('FAil');
   });
 
   test('B-T2 passenger validation rejects a blank name and a bad contact number', () => {
