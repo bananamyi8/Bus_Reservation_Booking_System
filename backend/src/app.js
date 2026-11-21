@@ -1,16 +1,17 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const cors = require("cors");
-app.use(cors({
-  origin: "https://busbookandreserve.netlify.app",
-  credentials: true
-}));
 
 function createApp() {
   const app = express();
   app.use(cors({ origin: process.env.FRONTEND_ORIGIN || '*' }));
   app.use(express.json({ limit: '100kb' }));
+
+  
+app.use(cors({
+  origin: "https://busbookandreserve.netlify.app",
+  credentials: true
+}));
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({
