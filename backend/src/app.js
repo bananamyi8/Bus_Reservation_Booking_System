@@ -4,22 +4,24 @@ const mongoose = require('mongoose');
 
 function createApp() {
   const app = express();
-
-  app.use(cors({
-    origin: process.env.FRONTEND_ORIGIN || 'https://busbookandreserve.netlify.app',
-    credentials: true
-  }));
+  app.use(cors({ origin: process.env.FRONTEND_ORIGIN || '*' }));
   app.use(express.json({ limit: '100kb' }));
 
-  app.get('/api/health', (req, res) => {
-    res.status(200).json({
-      status: 'ok',
-      database: mongoose.connection.readyState === 1
-        ? 'connected'
-        : 'disconnected',
-      time: new Date().toISOString()
-    });
+  
+app.use(cors({
+  origin: "https://busbookandreserve.netlify.app",
+  credentials: true
+}));
+
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    database: mongoose.connection.readyState === 1
+      ? 'connected'
+      : 'disconnected',
+    time: new Date().toISOString()
   });
+});
 
   app.use('/api/v1/auth', require('./routes/auth'));
   app.use('/api/v1/trips', require('./routes/trips'));
