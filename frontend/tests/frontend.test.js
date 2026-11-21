@@ -18,3 +18,14 @@ describe('frontend', () => {
     expect(map[0]).toEqual({ n: 1, taken: false });
   });
 });
+
+  test('F-T6 bus plan places every seat once, with a back bench when it fits', () => {
+    const lay = Logic.layoutSeats(45, [3]);
+    expect(lay.seats).toHaveLength(45);
+    expect(new Set(lay.seats.map(s => s.c + '-' + s.r)).size).toBe(45);
+    expect(lay.seats.every(s => s.r >= 1 && s.r <= 5 && s.c >= 2)).toBe(true);
+    expect(lay.seats.find(s => s.n === 3).taken).toBe(true);
+    const last = Math.max(...lay.seats.map(s => s.c));
+    expect(lay.seats.filter(s => s.c === last)).toHaveLength(5);
+    expect(Logic.layoutSeats(36).seats).toHaveLength(36);
+  });

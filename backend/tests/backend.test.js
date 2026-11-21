@@ -36,7 +36,6 @@ describe('backend', () => {
     expect(V.makeReference('2026-11-18')).toMatch(/^NB-261118-[0-9A-F]{4}$/);
     expect(V.seatsLeft(45, 3)).toBe(42);
   });
-});
 
   test('B-T6 customer registration rejects a bad contact number and a short password', async () => {
     const res = await request(app).post('/api/v1/auth/register')
@@ -51,13 +50,15 @@ describe('backend', () => {
     expect(pay.status).toBe(403);
     expect(rep.status).toBe(403);
   });
-    test('B-T8 trip validation accepts a blank date and rejects an invalid one', () => {
+
+  test('B-T8 trip validation accepts a blank date and rejects an invalid one', () => {
     const base = { origin: 'Naga', destination: 'Manila', time: '07:00', capacity: 45, fare: 650 };
     expect(V.validateTrip({ ...base, date: '' })).toEqual([]);
     expect(V.validateTrip({ ...base, date: '2026-11-30' })).toEqual([]);
     expect(V.validateTrip({ ...base, date: 'tomorrow' })).toHaveLength(1);
   });
-    test('B-T9 dashboard and account routes return 401 without a token', async () => {
+
+  test('B-T9 dashboard and account routes return 401 without a token', async () => {
     expect((await request(app).get('/api/v1/dashboard')).status).toBe(401);
     expect((await request(app).patch('/api/v1/account/password').send({})).status).toBe(401);
   });
@@ -69,3 +70,22 @@ describe('backend', () => {
     expect(V.validateNewPassword('samepassword1', 'samepassword1')).toHaveLength(1);
     expect(V.validateNewPassword('oldpassword1', 'brandnewpass1')).toEqual([]);
   });
+
+  test('B-T11 seat list validation enforces count, uniqueness and capacity', () => {
+    expect(V.validateSeats([], 60)).toHaveLength(1);
+    expect(V.validateSeats([3, 3], 60)).toHaveLength(1);
+    expect(V.validateSeats([1, 2, 3], 2)).toHaveLength(1);
+    expect(V.validateSeats([50], 60, 45)).toHaveLength(1);
+    expect(V.validateSeats([5, 6, 12], 60, 45)).toEqual([]);
+  });
+
+  test('B-T12 the ticket limit is the bus size and group payment needs a sign-in', async () => {
+    expect(V.maxTickets('passenger')).toBe(60);
+    expect(V.maxTickets('staff')).toBe(60);
+    expect((await request(app).patch('/api/v1/bookings/group/abc/paid')).status).toBe(401);
+  });
+
+  test('B-T13 editing a booking needs a sign-in', async () => {
+    expect((await request(app).patch('/api/v1/bookings/abc').send({})).status).toBe(401);
+  });
+});

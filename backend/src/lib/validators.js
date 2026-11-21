@@ -66,10 +66,24 @@ function validateNewPassword(current, next) {
   return e;
 }
 
+const MAX_TICKETS = 60; // the largest bus allowed, see validateTrip
+const maxTickets = () => MAX_TICKETS;
+
+function validateSeats(seats, max, capacity = Infinity) {
+  if (!Array.isArray(seats) || seats.length === 0) return ['Choose at least one seat.'];
+  if (!seats.every(s => Number.isInteger(s) && s >= 1)) return ['Seat numbers must be whole numbers from 1.'];
+  if (new Set(seats).size !== seats.length) return ['Each seat can only be chosen once.'];
+  if (seats.length > max) return [`You can book at most ${max} tickets at a time.`];
+  if (seats.some(s => s > capacity)) return ['One of those seats does not exist on this bus.'];
+  return [];
+}
+
 const seatsLeft = (capacity, taken) => capacity - taken;
 const escapeRegex = s => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 module.exports = {
   PASSENGER_TYPES, BOOKING_TYPES, PAY_STATUSES,
-    validatePassenger, validatePayment, validateTrip, validateProfile, validateNewPassword, isValidDate, todayPH, makeReference, seatsLeft, escapeRegex
+  validatePassenger, validatePayment, validateTrip, validateProfile, validateNewPassword,
+  validateSeats, maxTickets,
+  isValidDate, todayPH, makeReference, seatsLeft, escapeRegex
 };

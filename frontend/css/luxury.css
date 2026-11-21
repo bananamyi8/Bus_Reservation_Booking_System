@@ -1,0 +1,422 @@
+/* =====================================================
+   LUXURY LAYER: paste at the very bottom of styles.css
+   Adds: aurora background, glass panels, spotlight + 3D-tilt cards,
+   shimmer buttons, animated borders, polished seats, and a white 3D bus.
+   ===================================================== */
+@property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+
+@keyframes aurora { 0% { transform: translate3d(-3%, -2%, 0) scale(1); } 100% { transform: translate3d(3%, 3%, 0) scale(1.12); } }
+@keyframes panelIn { from { opacity: 0; transform: translateY(18px) scale(0.99); } to { opacity: 1; transform: none; } }
+@keyframes popUp { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes rowIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
+@keyframes spinBorder { to { --ang: 360deg; } }
+@keyframes textShine { to { background-position: 200% 0; } }
+@keyframes logoGlow { 0%, 100% { filter: drop-shadow(0 0 0.2rem rgba(204, 255, 138, 0.35)); } 50% { filter: drop-shadow(0 0 0.7rem rgba(204, 255, 138, 0.85)); } }
+@keyframes ctaGlow { 0%, 100% { box-shadow: 0 3px 0 var(--lime-deep), 0 0 0 rgba(204, 255, 138, 0); } 50% { box-shadow: 0 3px 0 var(--lime-deep), 0 0 2.2rem rgba(204, 255, 138, 0.45); } }
+@keyframes dotPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes busBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-0.7em); } }
+@keyframes ringSpin { to { transform: rotateX(72deg) rotateZ(360deg); } }
+@keyframes groundPulse { 0%, 100% { opacity: 0.7; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+
+/* ----- Atmosphere ----- */
+html { scrollbar-color: var(--indigo) var(--black); scrollbar-width: thin; }
+body::before {
+  content: "";
+  position: fixed;
+  inset: -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38rem 28rem at 12% 8%, rgba(58, 84, 180, 0.32), transparent 62%),
+    radial-gradient(32rem 24rem at 92% 88%, rgba(204, 255, 138, 0.09), transparent 60%),
+    radial-gradient(26rem 20rem at 70% 20%, rgba(108, 173, 224, 0.12), transparent 60%);
+  animation: aurora 16s ease-in-out infinite alternate;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background: radial-gradient(20rem circle at var(--px, 50%) var(--py, 30%), rgba(138, 216, 255, 0.07), transparent 65%);
+}
+
+/* ----- Headings ----- */
+h1, .lp h1 {
+  background: linear-gradient(100deg, #fff 20%, var(--ice) 50%, #fff 80%) 0 0 / 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textShine 7s linear infinite;
+}
+.lp h1 span { -webkit-text-fill-color: var(--lime); text-shadow: 0 0 1.5rem rgba(204, 255, 138, 0.6); }
+.lp h2 { -webkit-text-fill-color: currentColor; }
+
+/* ----- Sidebar and nav ----- */
+.top { background-color: rgba(0, 0, 0, 0.78); backdrop-filter: blur(14px); }
+.top strong::before, .lp-brand i { animation: logoGlow 4s ease-in-out infinite; background: linear-gradient(135deg, var(--lime), var(--ice)); }
+.top button { transition: background-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
+.top button:hover { transform: translateX(5px); }
+.top button[aria-current="page"] { background: linear-gradient(90deg, var(--indigo), #4a66d0); box-shadow: 0 10px 26px -12px rgba(74, 102, 208, 0.95); }
+.lp-nav { background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(16px) saturate(1.4); }
+
+/* ----- Glass panel ----- */
+main {
+  background: linear-gradient(180deg, rgba(18, 24, 35, 0.9), rgba(8, 11, 17, 0.94));
+  backdrop-filter: blur(16px);
+  border-image: none;
+  box-shadow: 0 40px 90px -40px rgba(58, 84, 180, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: panelIn 0.6s var(--ease) both;
+}
+
+/* ----- Buttons: shimmer sweep and idle glow ----- */
+button.go, .lp-lime, .lp-solid, button.alt, .lp-ghost { position: relative; overflow: hidden; }
+button.go::after, .lp-lime::after, .lp-solid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.6) 50%, transparent 70%);
+  transform: translateX(-130%);
+  transition: transform 0.8s var(--ease);
+}
+button.go:hover::after, .lp-lime:hover::after, .lp-solid:hover::after { transform: translateX(130%); }
+button.go:hover, .lp-lime:hover { box-shadow: 0 3px 0 var(--lime-deep), 0 0 1.6rem rgba(204, 255, 138, 0.35); }
+.lp-cta .lp-lime { animation: ctaGlow 3.2s ease-in-out infinite; }
+button.alt:hover, .lp-ghost:hover { box-shadow: 0 3px 0 #16233f, 0 0 1.4rem rgba(138, 216, 255, 0.22); }
+
+/* ----- Inputs ----- */
+input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px rgba(138, 216, 255, 0.18), 0 0 2rem rgba(138, 216, 255, 0.18); background: #02050a; }
+
+/* ----- Spotlight + 3D tilt cards (cursor position set by script) ----- */
+.stats div, .lp-step, dl, .lp-band { --mx: 50%; --my: 50%; }
+.stats div, .lp-step {
+  background: radial-gradient(14rem circle at var(--mx) var(--my), rgba(138, 216, 255, 0.14), transparent 62%), var(--panel-2);
+  transform: perspective(800px) rotateX(var(--tiltx, 0deg)) rotateY(var(--tilty, 0deg));
+  transition: transform 0.25s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  will-change: transform;
+}
+.stats div { animation: popUp 0.6s var(--ease) both; }
+.stats div:nth-child(2) { animation-delay: 0.07s; } .stats div:nth-child(3) { animation-delay: 0.14s; }
+.stats div:nth-child(4) { animation-delay: 0.21s; } .stats div:nth-child(5) { animation-delay: 0.28s; }
+.stats div:hover { box-shadow: 0 18px 40px -22px rgba(138, 216, 255, 0.55); }
+.lp-step:hover { transform: perspective(800px) translateY(-8px) rotateX(var(--tiltx, 0deg)) rotateY(var(--tilty, 0deg)); box-shadow: 0 26px 50px -26px var(--c); }
+.lp-step b { text-shadow: 0 0 1.6rem var(--c); }
+dl { background: radial-gradient(18rem circle at var(--mx) var(--my), rgba(204, 255, 138, 0.1), transparent 62%), var(--panel-2); }
+
+/* ----- Animated gradient border on key cards ----- */
+.login {
+  border: 2px solid transparent;
+  background:
+    var(--peaks) no-repeat bottom / 100% 3.5rem padding-box,
+    linear-gradient(var(--panel), var(--panel)) padding-box,
+    conic-gradient(from var(--ang), var(--lime), var(--ice), var(--indigo), var(--green), var(--lime)) border-box;
+  animation: spinBorder 7s linear infinite, panelIn 0.6s var(--ease) both;
+  box-shadow: 0 30px 80px -30px rgba(58, 84, 180, 0.7);
+}
+
+/* ----- Tables ----- */
+table tr { animation: rowIn 0.45s var(--ease) both; }
+table tr:nth-child(2) { animation-delay: 0.04s; } table tr:nth-child(3) { animation-delay: 0.08s; }
+table tr:nth-child(4) { animation-delay: 0.12s; } table tr:nth-child(5) { animation-delay: 0.16s; }
+table tr:nth-child(6) { animation-delay: 0.2s; } table tr:nth-child(n+7) { animation-delay: 0.24s; }
+tbody tr:hover td, table tr:hover td { background: linear-gradient(90deg, rgba(58, 84, 180, 0.28), rgba(16, 21, 30, 0.2)); }
+.tag.good::before { animation: dotPulse 2s ease-in-out infinite; }
+.scroll { box-shadow: 0 20px 50px -30px rgba(58, 84, 180, 0.5); }
+
+/* ----- Booking steps ----- */
+.steps .on::before { box-shadow: 0 0 0 5px rgba(204, 255, 138, 0.18), 0 0 1.4rem rgba(204, 255, 138, 0.6); }
+
+/* ----- Seat plan ----- */
+.bus { background: linear-gradient(180deg, #111826, #0a0e15); box-shadow: 0 30px 60px -34px rgba(58, 84, 180, 0.8), inset 0 0 40px rgba(58, 84, 180, 0.12); }
+.bus::before { content: ""; grid-column: 2 / -1; grid-row: 3; align-self: center; border-top: 2px dashed rgba(108, 173, 224, 0.28); }
+.seat { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18); transition: background-color 0.15s, transform 0.2s var(--ease), box-shadow 0.2s; }
+.seat:hover:not([disabled]) { transform: translateY(-3px) scale(1.08); box-shadow: 0 8px 20px -4px rgba(138, 216, 255, 0.7); }
+.seat[aria-pressed="true"] { transform: scale(1.06); box-shadow: 0 0 0 3px rgba(204, 255, 138, 0.35), 0 0 22px rgba(204, 255, 138, 0.7); }
+
+/* ----- Landing extras ----- */
+.lp-ticker { mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.lp-band { background: radial-gradient(22rem circle at var(--mx) var(--my), rgba(255, 255, 255, 0.16), transparent 60%), var(--indigo) var(--peaks-light) no-repeat bottom / 100% 4.5rem; box-shadow: 0 30px 70px -30px rgba(58, 84, 180, 0.9); }
+
+/* =====================================================
+   WHITE 3D BUS (pure CSS, drag to rotate)
+   All sizes are in em, so changing .lp-stage font-size scales the bus.
+   ===================================================== */
+.lp-stage {
+  --L: 17em; --H: 5.4em; --W: 5.2em;
+  position: absolute;
+  z-index: 2;
+  right: clamp(1rem, 5vw, 5rem);
+  top: 50%;
+  width: 26em;
+  height: 20em;
+  margin-top: -10em;
+  display: grid;
+  place-items: center;
+  perspective: 1500px;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+.lp-stage:active { cursor: grabbing; }
+.lp-ground {
+  position: absolute; left: 50%; bottom: 1.6em; width: 23em; height: 4.4em; margin-left: -11.5em;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(138, 216, 255, 0.4), rgba(58, 84, 180, 0.22) 45%, transparent 72%);
+  filter: blur(3px);
+  animation: groundPulse 4s ease-in-out infinite;
+}
+.lp-ring {
+  position: absolute; left: 50%; bottom: 0.4em; width: 25em; height: 25em; margin-left: -12.5em;
+  border: 1.5px dashed rgba(204, 255, 138, 0.5); border-radius: 50%;
+  transform: rotateX(72deg);
+  animation: ringSpin 22s linear infinite;
+}
+.bus-bob { position: relative; width: var(--L); height: var(--H); transform-style: preserve-3d; animation: busBob 5s ease-in-out infinite; }
+.bus3d {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(calc(-13deg + var(--tx, 0deg))) rotateY(var(--ry, -35deg));
+}
+.bus3d .f { position: absolute; overflow: hidden; background: linear-gradient(180deg, #ffffff 0%, #f4f8fd 62%, #dbe4f0 100%); }
+.bus3d i { position: absolute; display: block; font-style: normal; }
+
+/* long sides */
+.f.side { width: var(--L); height: var(--H); left: 0; top: 0; border-radius: 1.4em 2em 0.6em 0.6em; }
+.f.left { transform: translateZ(calc(var(--W) / 2)); }
+.f.right { transform: translateZ(calc(var(--W) / -2)); filter: brightness(0.84); }
+.f.side::before {            /* window band */
+  content: ""; position: absolute; left: 7%; right: 4%; top: 15%; height: 36%; border-radius: 0.5em 0.9em 0.4em 0.4em;
+  background:
+    linear-gradient(115deg, rgba(255, 255, 255, 0.34) 0, rgba(255, 255, 255, 0) 42%),
+    repeating-linear-gradient(90deg, #17446f 0 3em, #eef4fb 3em 3.22em);
+}
+.f.side::after {             /* livery stripe */
+  content: ""; position: absolute; left: 0; right: 0; bottom: 17%; height: 15%;
+  background: linear-gradient(90deg, var(--indigo), var(--sky) 55%, var(--lime));
+  clip-path: polygon(0 0, 100% 0, 94% 100%, 0 100%);
+}
+.door { right: 6%; top: 13%; width: 3.3em; height: 68%; border-radius: 0.4em; border: 0.14em solid #cbd6e4; background: linear-gradient(115deg, rgba(255, 255, 255, 0.4), transparent 45%), #1a4a78; }
+
+/* front and back */
+.f.end { width: var(--W); height: var(--H); left: calc((var(--L) - var(--W)) / 2); top: 0; }
+.f.front { transform: rotateY(90deg) translateZ(calc(var(--L) / 2)); border-radius: 1.5em 1.5em 0.5em 0.5em; filter: brightness(0.94); }
+.f.back { transform: rotateY(-90deg) translateZ(calc(var(--L) / 2)); border-radius: 0.8em 0.8em 0.4em 0.4em; filter: brightness(0.9); }
+.f.front::before { content: ""; position: absolute; left: 7%; right: 7%; top: 14%; height: 50%; border-radius: 1em 1em 0.5em 0.5em; background: linear-gradient(120deg, rgba(255, 255, 255, 0.4) 0, transparent 40%), linear-gradient(#1b4f80, #0c2744); }
+.f.back::before { content: ""; position: absolute; left: 12%; right: 12%; top: 16%; height: 34%; border-radius: 0.5em; background: linear-gradient(#1b4f80, #0c2744); }
+.sign { left: 22%; right: 22%; top: 2.5%; height: 0.8em; border-radius: 0.2em; background: #08121f; color: var(--lime); font: 800 0.5em/0.8em var(--body); text-align: center; letter-spacing: 0.2em; }
+.lamp { bottom: 14%; width: 0.95em; height: 0.55em; border-radius: 0.3em; background: radial-gradient(circle, #fff, var(--lime) 70%); box-shadow: 0 0 1.2em 0.2em rgba(204, 255, 138, 0.85); }
+.lamp.l { left: 9%; } .lamp.r { right: 9%; }
+.lamp.red { background: radial-gradient(circle, #ffd0d0, #e5484d 70%); box-shadow: 0 0 1em 0.1em rgba(229, 72, 77, 0.8); }
+.grille { left: 32%; right: 32%; bottom: 17%; height: 0.38em; border-radius: 0.2em; background: repeating-linear-gradient(90deg, #aebccd 0 0.25em, #e6edf6 0.25em 0.45em); }
+
+/* roof and floor */
+.f.roof { width: var(--L); height: var(--W); left: 0; top: calc((var(--H) - var(--W)) / 2); transform: rotateX(90deg) translateZ(calc(var(--H) / 2)); border-radius: 2em 2.4em 0.8em 0.8em; background: linear-gradient(90deg, #fff, #eef3fa); }
+.f.roof::before { content: ""; position: absolute; left: 26%; right: 20%; top: 24%; bottom: 24%; border-radius: 0.8em; background: linear-gradient(135deg, #e6edf6, #c5d1e0); box-shadow: inset 0 0 0.5em rgba(0, 0, 0, 0.15); }
+.f.floor { width: var(--L); height: var(--W); left: 0; top: calc((var(--H) - var(--W)) / 2); transform: rotateX(-90deg) translateZ(calc(var(--H) / 2)); background: #4a586b; }
+
+/* wheels */
+.arch, .wheel { border-radius: 50%; top: calc(var(--H) - 1.8em); }
+.arch { width: 3em; height: 3em; background: #0b1017; margin: -0.1em 0 0 -0.35em; }
+.wheel { width: 2.4em; height: 2.4em; background: radial-gradient(circle, #e4ebf4 0 18%, #5c6a7d 19% 30%, #1a1f27 31% 56%, #0b0e13 57% 100%); box-shadow: 0 0 0 0.12em #05070a; }
+.arch.fa, .wheel.fa { left: calc(var(--L) - 5.2em); }
+.arch.ra, .wheel.ra { left: 2.4em; }
+.arch.n { transform: translateZ(calc(var(--W) / 2 + 0.02em)); }
+.wheel.n { transform: translateZ(calc(var(--W) / 2 + 0.06em)); }
+.arch.x { transform: translateZ(calc(var(--W) / -2 - 0.02em)); }
+.wheel.x { transform: translateZ(calc(var(--W) / -2 - 0.06em)); }
+
+@media (max-width: 52rem) {
+  .lp-stage { position: relative; right: auto; top: auto; margin: 1.5rem auto 0; width: 100%; max-width: 26em; height: 17em; font-size: 0.78rem; }
+}
+@media (max-width: 40rem) {
+  .bus::before { grid-column: 3; grid-row: 2 / -1; align-self: stretch; justify-self: center; border-top: 0; border-left: 2px dashed rgba(108, 173, 224, 0.28); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before, h1, .lp h1, .login, .lp-ring, .lp-ground, .bus-bob { animation: none !important; }
+}
+
+/* =====================================================
+   MORE MOTION (second layer)
+   ===================================================== */
+@keyframes navDrop { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-18px); } to { opacity: 1; transform: none; } }
+@keyframes drawLine { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes drift { to { background-position: 9rem -9rem, 17rem -7rem; } }
+@keyframes growBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes ripple { to { transform: scale(1); opacity: 0; } }
+@keyframes sheen { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+@keyframes seatGlow { 0%, 100% { box-shadow: 0 0 0 3px rgba(204, 255, 138, 0.3), 0 0 14px rgba(204, 255, 138, 0.5); } 50% { box-shadow: 0 0 0 5px rgba(204, 255, 138, 0.18), 0 0 30px rgba(204, 255, 138, 0.85); } }
+@keyframes wheelSpin { to { rotate: 360deg; } }
+@keyframes lampPulse { 0%, 100% { box-shadow: 0 0 1em 0.1em rgba(204, 255, 138, 0.6); } 50% { box-shadow: 0 0 1.8em 0.5em rgba(204, 255, 138, 1); } }
+@keyframes peaksWave { to { background-position: 0 calc(100% + 5px); } }
+@keyframes lineFlow { to { background-position: 200% 0; } }
+
+/* ----- Landing: entrance, particles, scroll progress ----- */
+.lp-nav { animation: navDrop 0.9s var(--ease) both; }
+.lp-nav::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px;
+  background: linear-gradient(90deg, var(--lime), var(--ice), var(--indigo));
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+@supports (animation-timeline: scroll()) {
+  .lp-nav::after { animation: growBar linear both; animation-timeline: scroll(root); }
+}
+.lp-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0.55;
+  background-image: radial-gradient(circle, rgba(204, 255, 138, 0.9) 0 1.5px, transparent 2.5px), radial-gradient(circle, rgba(138, 216, 255, 0.8) 0 1.5px, transparent 2.5px);
+  background-size: 9rem 9rem, 13rem 13rem; background-position: 0 0, 4rem 6rem;
+  mask-image: linear-gradient(transparent, #000 25%, #000 75%, transparent);
+  animation: drift 40s linear infinite;
+}
+.lp-ticker span::after { animation: dotPulse 2.4s ease-in-out infinite; }
+.lp-ticker span:nth-child(2n)::after { animation-delay: 0.6s; }
+.lp-ticker span:nth-child(3n)::after { animation-delay: 1.2s; }
+.lp-list li { transition: transform 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s; }
+.lp-list li:hover { transform: translateX(10px); color: #fff; border-bottom-color: var(--lime); }
+.lp-band { position: relative; overflow: hidden; }
+.lp-band::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.2) 50%, transparent 65%); animation: sheen 6s ease-in-out infinite; }
+.lp-btn { translate: var(--bx, 0) var(--by, 0); transition: translate 0.25s var(--ease), background-color 0.15s var(--ease), transform 0.1s var(--ease), box-shadow 0.2s var(--ease), border-color 0.15s var(--ease); }
+
+/* ----- Glowing beam that circles a card on hover ----- */
+.lp-step, .stats div { position: relative; }
+.lp-step::before, .stats div::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none; opacity: 0; transition: opacity 0.3s;
+  background: conic-gradient(from var(--ang), transparent 65%, var(--c, var(--ice)) 90%, transparent);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+  animation: spinBorder 3.5s linear infinite;
+}
+.lp-step:hover::before, .stats div:hover::before { opacity: 1; }
+
+/* ----- App: staggered sidebar, drawn headings, field underline ----- */
+.top nav button { animation: slideIn 0.55s var(--ease) both; }
+.top nav button:nth-child(2) { animation-delay: 0.05s; } .top nav button:nth-child(3) { animation-delay: 0.1s; }
+.top nav button:nth-child(4) { animation-delay: 0.15s; } .top nav button:nth-child(5) { animation-delay: 0.2s; }
+.top nav button:nth-child(6) { animation-delay: 0.25s; } .top nav button:nth-child(n+7) { animation-delay: 0.3s; }
+.top button[aria-current="page"]::before { animation: dotPulse 2.4s ease-in-out infinite; }
+h2 { position: relative; }
+main h2::after { content: ""; position: absolute; left: 0; bottom: -2px; width: 100%; height: 2px; transform-origin: left; background: linear-gradient(90deg, var(--lime), var(--ice), transparent); animation: drawLine 1.1s var(--ease) both; }
+.field { position: relative; }
+.field::after { content: ""; position: absolute; left: 8px; right: 8px; bottom: 0; height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--lime), var(--ice)); transform: scaleX(0); transform-origin: left; transition: transform 0.45s var(--ease); pointer-events: none; }
+.field:focus-within::after { transform: scaleX(1); }
+.field label { transition: color 0.25s var(--ease), transform 0.25s var(--ease); }
+.field:focus-within label { color: var(--lime); transform: translateX(3px); }
+.empty { animation: peaksWave 5s ease-in-out infinite alternate; }
+tbody tr:hover td:first-child, table tr:hover td:first-child { box-shadow: inset 3px 0 var(--lime); }
+.pick-count strong { text-shadow: 0 0 1rem rgba(204, 255, 138, 0.7); }
+.seat[aria-pressed="true"] { animation: seatGlow 2.2s ease-in-out infinite; }
+
+/* ----- Click ripple ----- */
+button.stop, button.alt, button.go, .lp-btn { position: relative; overflow: hidden; }
+.ripple { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.55); transform: scale(0); animation: ripple 0.65s ease-out forwards; pointer-events: none; }
+button.alt .ripple, .lp-ghost .ripple { background: rgba(138, 216, 255, 0.4); }
+
+/* ----- 3D bus: spinning wheels, pulsing headlights ----- */
+.wheel { animation: wheelSpin 0.9s linear infinite; }
+.wheel::before { content: ""; position: absolute; inset: 22%; border-radius: 50%; background: repeating-conic-gradient(#e4ebf4 0 16deg, #5c6a7d 16deg 60deg); }
+.lamp:not(.red) { animation: lampPulse 2.2s ease-in-out infinite; }
+.lp-stage::before { content: ""; position: absolute; inset: 15% 8% 20%; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(138, 216, 255, 0.16), transparent 65%); filter: blur(10px); animation: groundPulse 5s ease-in-out infinite; }
+
+/* =====================================================
+   MEET YOUR RIDE: three 3D buses (sleeper, air-conditioned, ordinary)
+   Styled after the Bicol Isarog photos: white body, blue and green swooshes,
+   red line, silver skirt, big dark windshield and black grille.
+   ===================================================== */
+.fleet { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 1.2rem; }
+.fleet-card { text-align: center; padding: 1rem 1.3rem 1.6rem; }
+.fleet-card h3 { margin-top: 0.4rem; }
+.fleet-card p { margin-inline: auto; }
+.fleet-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 0.9rem; }
+.fleet-stage { --L: 17em; --H: 5.6em; --W: 5.2em; position: relative; height: 15.5em; font-size: 0.7rem; display: grid; place-items: center; perspective: 1500px; cursor: grab; touch-action: pan-y; user-select: none; }
+.fleet-stage:active { cursor: grabbing; }
+.fleet-card:has(.sleeper) .fleet-stage { --H: 7.6em; }
+.fleet-stage .lp-ground { bottom: 1.2em; }
+.fleet-stage .lp-ring { bottom: -2em; }
+
+.bus3d .brand { font: 800 1.05em/1 var(--display); letter-spacing: -0.02em; color: #17446f; white-space: nowrap; }
+.f.left .brand { left: 29%; bottom: 31%; }
+.f.right .brand { right: 29%; bottom: 31%; transform: scaleX(-1); }
+.sign { font-size: 0.44em; letter-spacing: 0.14em; }
+.plate { left: 6%; right: 6%; bottom: 38%; height: 0.8em; border-radius: 0.15em; background: linear-gradient(90deg, #1747a8, #3fae4f 50%, #1747a8); color: #fff; font: 700 0.5em/0.8em var(--body); text-align: center; letter-spacing: 0.12em; }
+
+/* Photo 2 style: single-deck coach, air-conditioned and ordinary */
+.coach { --sw1: #1747a8; --sw2: #3fae4f; --glass: #17446f; }
+.coach.ordinary { --sw1: #3a54b4; --sw2: #84df75; --glass: #4b8cc7; }
+.coach .f.side::before { top: 14%; height: 34%; background: linear-gradient(115deg, rgba(255, 255, 255, 0.34) 0, transparent 42%), repeating-linear-gradient(90deg, var(--glass) 0 2.9em, #eef4fb 2.9em 3.08em); }
+.coach .f.side::after { inset: auto 0 0 0; height: 46%; clip-path: none; background:
+  linear-gradient(#c8d2de, #c8d2de) 0 100% / 100% 11% no-repeat,
+  linear-gradient(#e5484d, #e5484d) 0 80% / 100% 3.5% no-repeat,
+  linear-gradient(112deg, transparent 0 46%, var(--sw2) 46% 57%, transparent 57%),
+  linear-gradient(112deg, transparent 0 6%, var(--sw1) 6% 44%, transparent 44%); }
+.coach .f.front::before { top: 8%; height: 38%; background: linear-gradient(120deg, rgba(255, 255, 255, 0.32) 0, transparent 40%), linear-gradient(#1b2a3a, #05090e); }
+.coach.ordinary .f.front::before { background: linear-gradient(120deg, rgba(255, 255, 255, 0.4) 0, transparent 40%), linear-gradient(#5f9fd6, #2d6aa5); }
+.coach .grille { left: 24%; right: 24%; bottom: 14%; height: 1.15em; border-radius: 0.3em; background: repeating-linear-gradient(90deg, #11161d 0 0.22em, #2b3340 0.22em 0.44em); box-shadow: 0 0 0 0.12em #05070a; }
+.coach .lamp { bottom: 15%; }
+.coach.ordinary .f.roof::before { display: none; }
+
+/* Photo 1 style: sleeper coach with two window rows, the upper one warmly lit */
+.sleeper .f.side { border-radius: 1.8em 2.4em 0.6em 0.6em; }
+.sleeper .f.side::before { top: 7%; height: 56%; background:
+  linear-gradient(115deg, rgba(255, 255, 255, 0.3) 0, transparent 42%),
+  repeating-linear-gradient(90deg, #e9b85c 0 2.5em, #fbf3e0 2.5em 2.68em) 0 0 / 100% 42% no-repeat,
+  repeating-linear-gradient(90deg, #17446f 0 2.5em, #eef4fb 2.5em 2.68em) 0 100% / 100% 42% no-repeat; }
+.sleeper .f.side::after { inset: auto 0 0 0; height: 33%; clip-path: none; background:
+  linear-gradient(#c8d2de, #c8d2de) 0 100% / 100% 14% no-repeat,
+  linear-gradient(#e5484d, #e5484d) 0 62% / 100% 3% no-repeat,
+  linear-gradient(105deg, transparent 0 14%, #1747a8 14% 40%, #3fae4f 40% 52%, transparent 52%); }
+.sleeper .f.front::before { top: 6%; height: 42%; background: linear-gradient(120deg, rgba(255, 255, 255, 0.32) 0, transparent 40%), linear-gradient(#1b2a3a, #05090e); }
+.sleeper .plate { bottom: 40%; }
+.sleeper .grille { left: 24%; right: 24%; bottom: 13%; height: 1.2em; background: repeating-linear-gradient(90deg, #11161d 0 0.22em, #2b3340 0.22em 0.44em); }
+.sleeper .f.side .door { height: 62%; top: 20%; }
+
+@media (max-width: 30rem) { .fleet-stage { font-size: 0.6rem; } }
+
+/* No dashed ring around the buses */
+.lp-ring { display: none; }
+
+/* Make the "Bicol Isarog" name visible: sit it above the livery stripes, on a white label */
+.bus3d .brand {
+  z-index: 3;
+  padding: 0.2em 0.6em;
+  font-size: 0.95em;
+  color: #0f2f57;
+  background: rgba(255, 255, 255, 0.96);
+  border-radius: 0.45em;
+  box-shadow: 0 0.12em 0.35em rgba(0, 0, 0, 0.28);
+}
+.f.left .brand { left: 27%; bottom: 33%; }
+.f.right .brand { right: 27%; bottom: 33%; }
+.sleeper .f.left .brand, .sleeper .f.right .brand { bottom: 15%; }
+
+/* Close the gaps at the bus corners: every face is square so the faces meet edge to edge,
+   with a thin light edge so the corners still read cleanly. */
+.bus3d .f,
+.bus3d .f.side, .bus3d .f.front, .bus3d .f.back, .bus3d .f.roof, .bus3d .f.floor,
+.sleeper .f.side { border-radius: 0 !important; }
+.bus3d .f { box-shadow: inset 0 0 0 1px rgba(205, 216, 232, 0.7); }
+.bus3d .f.roof { box-shadow: inset 0 0 0 1px rgba(205, 216, 232, 0.7), inset 0 0 1.2em rgba(138, 216, 255, 0.18); }
+
+/* Bus door: tall double-leaf door behind the front axle, tinted glass over a white lower panel */
+.bus3d .f.side .door {
+  z-index: 2;
+  right: 5%; top: 11%;
+  width: 3em; height: 78%;
+  border: 0.14em solid #b4c1d2;
+  border-radius: 0.25em;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 0.05em), rgba(255, 255, 255, 0.9) calc(50% - 0.05em) calc(50% + 0.05em), transparent calc(50% + 0.05em)),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.38) 0, transparent 45%),
+    linear-gradient(#17446f 0 60%, #f4f8fd 60%);
+  box-shadow: inset 0 0 0 0.1em rgba(255, 255, 255, 0.55), 0 0 0.35em rgba(0, 0, 0, 0.3);
+}
+.bus3d .f.side .door::after {            /* handles */
+  content: ""; position: absolute; left: 50%; top: 62%;
+  width: 1em; height: 0.55em; transform: translateX(-50%);
+  background: linear-gradient(90deg, #8d9bb0 0 0.12em, transparent 0.12em calc(100% - 0.12em), #8d9bb0 calc(100% - 0.12em));
+}
+.sleeper .f.side .door { top: 36%; height: 52%; }
+.coach.ordinary .f.side .door { background:
+    linear-gradient(90deg, transparent calc(50% - 0.05em), rgba(255, 255, 255, 0.9) calc(50% - 0.05em) calc(50% + 0.05em), transparent calc(50% + 0.05em)),
+    linear-gradient(115deg, rgba(255, 255, 255, 0.4) 0, transparent 45%),
+    linear-gradient(#4b8cc7 0 60%, #f4f8fd 60%); }
